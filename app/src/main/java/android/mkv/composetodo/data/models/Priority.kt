@@ -1,15 +1,15 @@
 package android.mkv.composetodo.data.models
 
-import android.mkv.composetodo.ui.theme.highPriorityColor
-import android.mkv.composetodo.ui.theme.lowPriorityColor
-import android.mkv.composetodo.ui.theme.mediumPriorityColor
-import android.mkv.composetodo.ui.theme.nonePriorityColor
+import android.mkv.composetodo.ui.theme.HighPriorityColor
+import android.mkv.composetodo.ui.theme.LowPriorityColor
+import android.mkv.composetodo.ui.theme.MediumPriorityColor
+import android.mkv.composetodo.ui.theme.NonePriorityColor
 import androidx.compose.ui.graphics.Color
 
 
 enum class Priority(val color: Color) {
-    HIGH(highPriorityColor),
-    MEDIUM(mediumPriorityColor),
-    LOW(lowPriorityColor),
-    NONE(nonePriorityColor)
+    HIGH(HighPriorityColor),
+    MEDIUM(MediumPriorityColor),
+    LOW(LowPriorityColor),
+    NONE(NonePriorityColor)
 }
