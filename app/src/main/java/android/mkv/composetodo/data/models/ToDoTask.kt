@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = DATABASE_TABLE)
 data class ToDoTask(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val title: String = "",
+    var title: String = "",
     val description: String = "",
     val priority: Priority = Priority.NONE
 )

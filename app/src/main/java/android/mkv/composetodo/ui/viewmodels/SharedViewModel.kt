@@ -2,6 +2,10 @@ package android.mkv.composetodo.ui.viewmodels
 
 import android.mkv.composetodo.data.models.ToDoTask
 import android.mkv.composetodo.data.repositories.ToDoRepository
+import android.mkv.composetodo.util.RequestState
+import android.mkv.composetodo.util.SearchTopBarState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,13 +19,33 @@ class SharedViewModel @Inject constructor(
     private val repository: ToDoRepository
 ) : ViewModel() {
 
-    private val _allTasks = MutableStateFlow<List<ToDoTask>>(emptyList())
-    val allTasks: StateFlow<List<ToDoTask>> = _allTasks
+    val searchAppBarState: MutableState<SearchTopBarState> =
+        mutableStateOf(SearchTopBarState.CLOSED)
+
+    val searchTextState: MutableState<String> = mutableStateOf("")
+
+    private val _allTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
+    val allTasks: StateFlow<RequestState<List<ToDoTask>>> = _allTasks
 
     fun getAllTasks() {
+        _allTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                repository.getAllTasks.collect {
+                    _allTasks.value = RequestState.Success(it)
+                }
+            }
+        } catch (e: Exception) {
+            _allTasks.value = RequestState.Error(e)
+        }
+    }
+
+    private val _selectedTask: MutableStateFlow<ToDoTask?> = MutableStateFlow(null)
+    val selectedTask: StateFlow<ToDoTask?> = _selectedTask
+    fun getSelectedTask(taskId: Int) {
         viewModelScope.launch {
-            repository.getAllTasks.collect {
-                _allTasks.value = it
+            repository.getSelectedTask(taskId).collect { task ->
+                _selectedTask.value = task
             }
         }
     }

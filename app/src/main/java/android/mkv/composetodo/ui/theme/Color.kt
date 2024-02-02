@@ -28,3 +28,6 @@ val ColorScheme.TopAppBarContentColor: Color
     get() = if (isSystemInDarkTheme()) LightGray else Color.White
 
 
+val ColorScheme.TaskBackground: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) DarkGray else Color.White
