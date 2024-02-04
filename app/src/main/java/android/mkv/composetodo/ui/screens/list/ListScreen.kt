@@ -2,23 +2,32 @@ package android.mkv.composetodo.ui.screens.list
 
 import android.mkv.composetodo.ui.theme.ComposeToDoTheme
 import android.mkv.composetodo.ui.viewmodels.SharedViewModel
+import android.mkv.composetodo.util.Action
 import android.mkv.composetodo.util.SearchTopBarState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -30,11 +39,27 @@ fun ListScreen(
         sharedViewModel.getAllTasks()
     }
 
+    val action by sharedViewModel.action
+
     val allTasks by sharedViewModel.allTasks.collectAsState()
+    val searchedTasks by sharedViewModel.searchedTasks.collectAsState()
 
     val searchTopBarState: SearchTopBarState
             by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    //sharedViewModel.handleDatabaseActions(action = action)
+    DisplaySnackBar(
+        scaffoldState = snackbarHostState,
+        handleDatabaseAction = { sharedViewModel.handleDatabaseActions(action = action) },
+        onUndoClicked = {
+            sharedViewModel.action.value = it
+        },
+        taskTitle = sharedViewModel.title.value,
+        action = action
+    )
 
     ComposeToDoTheme {
         Surface(
@@ -44,12 +69,18 @@ fun ListScreen(
                 content = { paddingValues ->
                     Column(
                         modifier = Modifier
-                            .padding(vertical = paddingValues.calculateTopPadding())
                             .fillMaxSize()
+                            .padding(
+                                vertical = paddingValues.calculateTopPadding(),
+                                horizontal = 0.dp
+                            )
+                            .padding(vertical = 10.dp)
                     ) {
                         ListContent(
                             allTasks,
-                            navigateToTaskScreen
+                            searchedTasks,
+                            searchTopBarState,
+                            navigateToTaskScreen,
                         )
                     }
                 },
@@ -59,6 +90,9 @@ fun ListScreen(
                 bottomBar = {},
                 floatingActionButton = {
                     ListFab(onFabClicked = navigateToTaskScreen)
+                },
+                snackbarHost = {
+                    SnackbarHost(snackbarHostState)
                 }
             )
         }
@@ -83,6 +117,47 @@ fun ListFab(
             tint = Color.White
         )
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DisplaySnackBar(
+    scaffoldState: SnackbarHostState,
+    handleDatabaseAction: () -> Unit,
+    taskTitle: String,
+    onUndoClicked: (Action) -> Unit,
+    action: Action
+) {
+    handleDatabaseAction()
+
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = action) {
+        if (action != Action.NO_ACTION) {
+            scope.launch {
+                val snackBarResult = scaffoldState.showSnackbar(
+                    message = "${action.name}: $taskTitle",
+                    actionLabel = if (action.name == "DELETE") "UNDO" else "OK"
+                )
+                undoDeleteTask(
+                    action = action,
+                    snackBarResult = snackBarResult,
+                    onUndoClicked = onUndoClicked
+                )
+            }
+        }
+    }
+
+}
+
+private fun undoDeleteTask(
+    action: Action,
+    snackBarResult: SnackbarResult,
+    onUndoClicked: (Action) -> Unit
+) {
+    if (snackBarResult == SnackbarResult.ActionPerformed
+        && action == Action.DELETE
+    ) onUndoClicked(Action.UNDO)
 }
 
 

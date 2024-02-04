@@ -6,6 +6,7 @@ import android.mkv.composetodo.data.models.Priority
 import android.mkv.composetodo.ui.theme.TopAppBarContentColor
 import android.mkv.composetodo.ui.theme.Typography
 import android.mkv.composetodo.ui.viewmodels.SharedViewModel
+import android.mkv.composetodo.util.Action
 import android.mkv.composetodo.util.SearchTopBarState
 import android.mkv.composetodo.util.TrailingIconState
 import androidx.compose.foundation.layout.Column
@@ -57,7 +58,7 @@ fun ListTopBar(
 
                 },
                 onDeleteClicked = {
-
+                    sharedViewModel.action.value = Action.DELETE_ALL
                 }
             )
 
@@ -75,7 +76,7 @@ fun ListTopBar(
                     sharedViewModel.searchTextState.value = ""
                 },
                 onSearchClicked = {
-
+                    sharedViewModel.searchDatabase(it)
                 })
         }
     }
