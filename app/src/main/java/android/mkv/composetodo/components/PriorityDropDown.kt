@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -58,7 +59,6 @@ fun PriorityDropDown(
                 .fillMaxWidth()
                 .height(60.dp)
                 .clickable { expanded = true }
-                .alpha(0.7f)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -74,7 +74,7 @@ fun PriorityDropDown(
             ) {
                 drawCircle(color = priority.color)
             }
-            Text(text = priority.name, modifier = Modifier.weight(8f))
+            Text(text = stringResource(id = priority.title), modifier = Modifier.weight(8f))
             IconButton(
                 onClick = {
                     expanded = true
@@ -122,7 +122,7 @@ fun PriorityDropDown(
 }
 
 @Preview(showSystemUi = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, locale = "fa")
 @Composable
 fun PreviewPriorityDropDown() {
     ComposeToDoTheme {

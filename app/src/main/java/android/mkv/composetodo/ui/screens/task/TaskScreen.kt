@@ -1,5 +1,6 @@
 package android.mkv.composetodo.ui.screens.task
 
+import android.mkv.composetodo.R
 import android.mkv.composetodo.data.models.Priority
 import android.mkv.composetodo.data.models.ToDoTask
 import android.mkv.composetodo.ui.viewmodels.SharedViewModel
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun TaskScreen(
@@ -20,6 +22,8 @@ fun TaskScreen(
     sharedViewModel: SharedViewModel,
     navigateToListScreen: (Action) -> Unit
 ) {
+
+    val message = stringResource(R.string.fields_empty)
 
     val title: String by sharedViewModel.title
     val description: String by sharedViewModel.description
@@ -51,17 +55,16 @@ fun TaskScreen(
         },
         topBar = {
             TaskAppBar(selectedTask) { action ->
-
                 if (action == Action.NO_ACTION) navigateToListScreen(action)
                 else {
                     if (sharedViewModel.validateFields()) navigateToListScreen(action)
-                    else Toast.makeText(context, "Fields Empty!", Toast.LENGTH_SHORT)
-                        .show()
+                    else Toast.makeText(
+                        context,
+                        message, Toast.LENGTH_SHORT
+                    ).show()
                 }
-
             }
         }
-
     )
 }
 

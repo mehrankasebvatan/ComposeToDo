@@ -1,5 +1,6 @@
 package android.mkv.composetodo.ui.screens.task
 
+import android.mkv.composetodo.R
 import android.mkv.composetodo.components.PriorityDropDown
 import android.mkv.composetodo.data.models.Priority
 import android.mkv.composetodo.ui.theme.ComposeToDoTheme
@@ -13,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -36,7 +38,7 @@ fun TaskContent(
             },
             modifier = Modifier.fillMaxWidth(),
             label = {
-                Text(text = "Title")
+                Text(text = stringResource(R.string.title))
             },
             singleLine = true
         )
@@ -51,13 +53,13 @@ fun TaskContent(
             },
             modifier = Modifier.fillMaxSize(),
             label = {
-                Text(text = "Description")
+                Text(text = stringResource(R.string.description))
             },
         )
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showSystemUi = true, locale = "fa")
 @Composable
 fun PreviewTaskContent() {
     ComposeToDoTheme {

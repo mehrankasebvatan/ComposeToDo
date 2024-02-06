@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">ComposeToDo</string>
+    <string name="app_name">مدیریت وظایف</string>
+    <string name="delete_task">حذف \%1$s\</string>
+    <string name="delete_task_confirmation">آیا از حذف این وظیفه اطمینان دارید؟</string>
+    <string name="none">مهم نیست</string>
+    <string name="high">حتما باید انجام بدم</string>
+    <string name="medium">باید انجام بدم</string>
+    <string name="low">بهتره انجام بدم</string>
+    <string name="ok">تایید</string>
+    <string name="undo">برگردان</string>
+    <string name="undo_success">با موفقیت بازگشت</string>
+    <string name="add">با موفقیت افزوده شد</string>
+    <string name="update">با موفقیت ویرایش شد</string>
+    <string name="delete">با موفقیت حذف شد</string>
+    <string name="delete_all">همه وظایف حذف شدند</string>
+    <string name="no_action">هیچی</string>
+    <string name="search">جستجو ...</string>
+    <string name="add_task">وظیفه جدید</string>
+    <string name="title">عنوان</string>
+    <string name="description">توضیحات</string>
+    <string name="delete_all_question">حذف همه؟</string>
+    <string name="delete_all_question_">حذف همه وظایف</string>
+    <string name="fields_empty">ورودی ها نمیتوانند خالی باشند!</string>
+    <string name="cancel">انصراف</string>
+    <string name="yes">تایید</string>
+    <string name="are_you_sure_you_want_to_delete_all_tasks">همه وظایف حذف خواهد شد.\nآیا اطمینان دارید؟</string>
+    <string name="language">انتخاب زبان</string>
 </resources>

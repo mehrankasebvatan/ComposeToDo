@@ -1,12 +1,14 @@
 package android.mkv.composetodo.util
 
-enum class Action {
-    ADD,
-    UPDATE,
-    DELETE,
-    DELETE_ALL,
-    UNDO,
-    NO_ACTION
+import android.mkv.composetodo.R
+
+enum class Action(val title: Int) {
+    ADD(R.string.add),
+    UPDATE(R.string.update),
+    DELETE(R.string.delete),
+    DELETE_ALL(R.string.delete_all),
+    UNDO(R.string.undo_success),
+    NO_ACTION(R.string.no_action)
 }
 
 fun String?.toAction(): Action {

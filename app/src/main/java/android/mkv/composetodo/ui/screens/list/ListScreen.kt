@@ -1,5 +1,6 @@
 package android.mkv.composetodo.ui.screens.list
 
+import android.mkv.composetodo.R
 import android.mkv.composetodo.ui.theme.ComposeToDoTheme
 import android.mkv.composetodo.ui.viewmodels.SharedViewModel
 import android.mkv.composetodo.util.Action
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -37,12 +39,16 @@ fun ListScreen(
 ) {
     LaunchedEffect(key1 = true) {
         sharedViewModel.getAllTasks()
+        sharedViewModel.readSortState()
     }
 
     val action by sharedViewModel.action
 
     val allTasks by sharedViewModel.allTasks.collectAsState()
     val searchedTasks by sharedViewModel.searchedTasks.collectAsState()
+    val sortState by sharedViewModel.sortState.collectAsState()
+    val lowPriorityTasks by sharedViewModel.lowPriorityTasks.collectAsState()
+    val highPriorityTasks by sharedViewModel.highPriorityTasks.collectAsState()
 
     val searchTopBarState: SearchTopBarState
             by sharedViewModel.searchAppBarState
@@ -79,8 +85,16 @@ fun ListScreen(
                         ListContent(
                             allTasks,
                             searchedTasks,
+                            lowPriorityTasks,
+                            highPriorityTasks,
+                            sortState,
                             searchTopBarState,
                             navigateToTaskScreen,
+                            onSwipeToDelete = { action, task ->
+                                sharedViewModel.action.value = action
+                                sharedViewModel.updateTaskFields(task)
+
+                            }
                         )
                     }
                 },
@@ -130,14 +144,18 @@ fun DisplaySnackBar(
     action: Action
 ) {
     handleDatabaseAction()
+    val undo: String = stringResource(R.string.undo)
+    val ok: String = stringResource(R.string.ok)
+    val message = stringResource(id = action.title)
 
     val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = action) {
         if (action != Action.NO_ACTION) {
             scope.launch {
                 val snackBarResult = scaffoldState.showSnackbar(
-                    message = "${action.name}: $taskTitle",
-                    actionLabel = if (action.name == "DELETE") "UNDO" else "OK"
+                    message = message,
+                    actionLabel = if (action.name == "DELETE") undo else ok
+
                 )
                 undoDeleteTask(
                     action = action,

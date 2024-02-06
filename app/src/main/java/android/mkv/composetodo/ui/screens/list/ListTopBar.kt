@@ -1,8 +1,10 @@
 package android.mkv.composetodo.ui.screens.list
 
 import android.mkv.composetodo.R
+import android.mkv.composetodo.components.DisplayAlertDialog
 import android.mkv.composetodo.components.PriorityItem
 import android.mkv.composetodo.data.models.Priority
+import android.mkv.composetodo.ui.theme.ComposeToDoTheme
 import android.mkv.composetodo.ui.theme.TopAppBarContentColor
 import android.mkv.composetodo.ui.theme.Typography
 import android.mkv.composetodo.ui.viewmodels.SharedViewModel
@@ -10,7 +12,10 @@ import android.mkv.composetodo.util.Action
 import android.mkv.composetodo.util.SearchTopBarState
 import android.mkv.composetodo.util.TrailingIconState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -35,9 +42,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,10 +63,11 @@ fun ListTopBar(
                 onSearchClicked = {
                     sharedViewModel.searchAppBarState.value = SearchTopBarState.OPENED
                 },
-                onSortClicked = {
-
+                onSortClicked = { priority ->
+                    sharedViewModel.persistSortingState(priority)
                 },
                 onDeleteClicked = {
+
                     sharedViewModel.action.value = Action.DELETE_ALL
                 }
             )
@@ -78,6 +88,7 @@ fun ListTopBar(
                 onSearchClicked = {
                     sharedViewModel.searchDatabase(it)
                 })
+
         }
     }
 
@@ -108,7 +119,7 @@ fun SearchTopBar(
                         .padding(end = 16.dp),
                     placeholder = {
                         Text(
-                            text = "Search",
+                            text = stringResource(R.string.search),
                             color = Color.LightGray
                         )
                     },
@@ -192,7 +203,7 @@ fun DefaultListTopBar(
     TopAppBar(
         title = {
             Text(
-                text = "Tasks",
+                text = stringResource(id = R.string.app_name),
                 color = MaterialTheme.colorScheme.TopAppBarContentColor
             )
         },
@@ -200,17 +211,44 @@ fun DefaultListTopBar(
             containerColor = MaterialTheme.colorScheme.primary
         ),
         actions = {
-            SearchAction {
-                onSearchClicked()
-            }
-            SortAction {
-                onSortClicked(it)
-            }
-            DeleteAllAction {
-                onDeleteClicked()
-            }
+            DefaultListTopBarActions(
+                onSearchClicked = onSearchClicked,
+                onSortClicked = onSortClicked,
+                onDeleteClicked = onDeleteClicked
+            )
         }
     )
+}
+
+@Composable
+fun DefaultListTopBarActions(
+    onSearchClicked: () -> Unit,
+    onSortClicked: (Priority) -> Unit,
+    onDeleteClicked: () -> Unit
+) {
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
+
+    DisplayAlertDialog(
+        title = stringResource(id = R.string.delete_all_question_),
+        message = stringResource(R.string.are_you_sure_you_want_to_delete_all_tasks),
+        openDialog = openDialog,
+        closeDialog = { openDialog = false },
+        onYesClicked = {
+            onDeleteClicked()
+        })
+
+
+    SearchAction {
+        onSearchClicked()
+    }
+    SortAction {
+        onSortClicked(it)
+    }
+    DeleteAllAction {
+        openDialog = true
+    }
 }
 
 
@@ -280,6 +318,7 @@ fun SortAction(
     }
 }
 
+
 @Composable
 fun DeleteAllAction(
     onDeleteAction: () -> Unit
@@ -304,7 +343,7 @@ fun DeleteAllAction(
             }) {
             DropdownMenuItem(text = {
                 Text(
-                    text = "Delete All?",
+                    text = stringResource(R.string.delete_all_question),
                     modifier = Modifier.padding(start = 3.dp),
                     style = Typography.titleMedium
                 )
@@ -313,26 +352,65 @@ fun DeleteAllAction(
                     expended = false
                     onDeleteAction()
                 })
+            Divider()
+            DropdownMenuItem(text = {
+                Column {
+
+                    Text(text = stringResource(R.string.language))
+
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "English",
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                        )
+
+                        Switch(checked = false, onCheckedChange = {})
+
+                        Text(
+                            text = "فارسی",
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                        )
+                    }
+
+                }
+            }, onClick = {
+
+            })
         }
     }
 }
 
 
-@Preview
+@Preview(locale = "fa", showBackground = true)
 @Composable
 fun PreviewDefault() {
-    DefaultListTopBar(
-        onSearchClicked = { },
-        onSortClicked = {},
-        onDeleteClicked = {})
+    ComposeToDoTheme {
+        Surface {
+            DefaultListTopBar(
+                onSearchClicked = { },
+                onSortClicked = {},
+                onDeleteClicked = {})
+        }
+    }
+
 }
 
-@Preview
+@Preview(locale = "fa")
 @Composable
 fun PreviewSearch() {
-    SearchTopBar(
-        text = "",
-        onTextChanged = {},
-        onCloseClick = {},
-        onSearchClicked = {})
+    ComposeToDoTheme {
+        Surface {
+            SearchTopBar(
+                text = "",
+                onTextChanged = {},
+                onCloseClick = {},
+                onSearchClicked = {})
+        }
+    }
 }
