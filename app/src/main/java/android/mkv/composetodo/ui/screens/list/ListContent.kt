@@ -1,6 +1,8 @@
 package android.mkv.composetodo.ui.screens.list
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.mkv.composetodo.R
 import android.mkv.composetodo.data.models.Priority
 import android.mkv.composetodo.data.models.ToDoTask
 import android.mkv.composetodo.ui.theme.ComposeToDoTheme
@@ -8,7 +10,11 @@ import android.mkv.composetodo.ui.theme.Typography
 import android.mkv.composetodo.util.Action
 import android.mkv.composetodo.util.RequestState
 import android.mkv.composetodo.util.SearchTopBarState
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -34,15 +40,23 @@ import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListContent(
@@ -103,6 +117,7 @@ fun ListContent(
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HandleListContent(
@@ -131,66 +146,87 @@ fun HandleListContent(
                     val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
 
                     if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
-                        onSwipeToDelete(Action.DELETE, task)
+                        val scope = rememberCoroutineScope()
+                        scope.launch {
+                            delay(300)
+                            onSwipeToDelete(Action.DELETE, task)
+                        }
                     }
 
                     val degree by animateFloatAsState(
                         if (dismissState.targetValue == DismissValue.Default) 0f else 45f,
                     )
 
-                    SwipeToDismiss(
-                        state = dismissState,
-                        directions = setOf(DismissDirection.EndToStart),
-                        background = {
-                            RedBackground(degree = degree)
-                        },
-                        dismissContent = {
-                            TaskItem(
-                                toDoTask = task,
-                                navigationToTaskScreen = navigationToTaskScreen
+                    var itemAppeared by remember {
+                        mutableStateOf(false)
+                    }
+
+                    LaunchedEffect(key1 = true) {
+                        itemAppeared = true
+                    }
+
+                    AnimatedVisibility(
+                        visible = itemAppeared && !isDismissed,
+                        enter = expandVertically(
+                            animationSpec = tween(
+                                durationMillis = 300
                             )
-                        },
-
+                        ),
+                        exit = shrinkHorizontally(
+                            animationSpec = tween(
+                                durationMillis = 300
+                            )
                         )
+                    ) {
+                        SwipeToDismiss(
+                            state = dismissState,
+                            directions = setOf(DismissDirection.EndToStart),
+                            background = {
+                                RedBackground(degree = degree)
+                            },
+                            dismissContent = {
+                                TaskItem(
+                                    toDoTask = task,
+                                    navigationToTaskScreen = navigationToTaskScreen
+                                )
+                            },
 
-
+                            )
+                    }
                 })
             }
         }
     }
 }
 
+
 @Preview(showBackground = true, locale = "fa")
 @Composable
-fun PreviewRedBackground() {
-    ComposeToDoTheme {
-        Surface {
-            RedBackground(45f)
+fun RedBackground(degree: Float = 0f) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.CenterEnd,
+    ) {
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                modifier = Modifier
+                    .rotate(degree)
+                    .size(50.dp),
+                imageVector = Icons.Filled.Delete,
+                contentDescription = "",
+                tint = Color.Red,
+            )
+            Text(
+                text = stringResource(id = R.string.delete_),
+                color = Color.Red
+            )
         }
     }
 }
-
-@Composable
-fun RedBackground(degree: Float) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp),
-        contentAlignment = Alignment.CenterEnd,
-    ) {
-        Icon(
-            modifier = Modifier
-                .rotate(degree)
-                .size(50.dp),
-            imageVector = Icons.Filled.Delete,
-            contentDescription = "",
-            tint = Color.Red,
-
-
-            )
-    }
-}
-
 
 @Composable
 fun TaskItem(
@@ -203,6 +239,7 @@ fun TaskItem(
         onClick = {
             navigationToTaskScreen(toDoTask.id)
         }
+
 
     ) {
 
@@ -262,8 +299,8 @@ fun TaskItem(
 
 }
 
-@Preview(showSystemUi = true, locale = "fa")
-@Preview(showSystemUi = true, uiMode = UI_MODE_NIGHT_YES, locale = "fa")
+@Preview(showBackground = true, locale = "fa")
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, locale = "fa")
 @Composable
 fun PreviewTaskItem() {
     ComposeToDoTheme {

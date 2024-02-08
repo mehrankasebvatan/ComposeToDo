@@ -1,9 +1,10 @@
 package android.mkv.composetodo.navigation
 
 import android.mkv.composetodo.navigation.destinations.listComposable
+import android.mkv.composetodo.navigation.destinations.splashComposable
 import android.mkv.composetodo.navigation.destinations.taskComposable
 import android.mkv.composetodo.ui.viewmodels.SharedViewModel
-import android.mkv.composetodo.util.Constant.LIST_SCREEN
+import android.mkv.composetodo.util.Constant.SPLASH_SCREEN
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -22,9 +23,10 @@ fun SetupNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = LIST_SCREEN
+        startDestination = SPLASH_SCREEN
     ) {
-        listComposable(navigateToTaskScreen = screen.task, sharedViewModel = viewModel)
-        taskComposable(navigateToListScreen = screen.list, sharedViewModel = viewModel)
+        splashComposable(navigateToListScreen = screen.splash)
+        listComposable(navigateToTaskScreen = screen.list, sharedViewModel = viewModel)
+        taskComposable(navigateToListScreen = screen.task, sharedViewModel = viewModel)
     }
 }
