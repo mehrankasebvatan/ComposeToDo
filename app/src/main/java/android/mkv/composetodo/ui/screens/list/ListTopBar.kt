@@ -10,7 +10,6 @@ import android.mkv.composetodo.ui.theme.Typography
 import android.mkv.composetodo.ui.viewmodels.SharedViewModel
 import android.mkv.composetodo.util.Action
 import android.mkv.composetodo.util.SearchTopBarState
-import android.mkv.composetodo.util.TrailingIconState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -97,9 +96,6 @@ fun SearchTopBar(
     onCloseClick: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
-    var trillingIconState by remember {
-        mutableStateOf(TrailingIconState.READY_TO_CLOSE)
-    }
 
     Surface(
         modifier = Modifier.fillMaxWidth()
@@ -136,21 +132,9 @@ fun SearchTopBar(
                     },
                     trailingIcon = {
                         IconButton(onClick = {
-                            when (trillingIconState) {
-                                TrailingIconState.READY_TO_DELETE -> {
-                                    onTextChanged("")
-                                    trillingIconState = TrailingIconState.READY_TO_CLOSE
-                                }
+                            if (text.isNotEmpty()) onTextChanged("")
+                            else onCloseClick()
 
-                                TrailingIconState.READY_TO_CLOSE -> {
-                                    if (text.isNotEmpty()) {
-                                        onTextChanged("")
-                                    } else {
-                                        onCloseClick()
-                                        trillingIconState = TrailingIconState.READY_TO_DELETE
-                                    }
-                                }
-                            }
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Clear,
@@ -278,34 +262,23 @@ fun SortAction(
             contentDescription = "",
             tint = MaterialTheme.colorScheme.TopAppBarContentColor
         )
+
+
+
+
         DropdownMenu(expanded = expended,
             onDismissRequest = {
                 expended = false
             }) {
-            Column {
+
+            Priority.entries.toTypedArray().slice(setOf(0, 2, 3)).forEach { priority ->
                 DropdownMenuItem(
                     text = {
-                        PriorityItem(priority = Priority.NONE)
+                        PriorityItem(priority = priority)
                     },
                     onClick = {
                         expended = false
-                        onSortClick(Priority.NONE)
-                    })
-                DropdownMenuItem(
-                    text = {
-                        PriorityItem(priority = Priority.LOW)
-                    },
-                    onClick = {
-                        expended = false
-                        onSortClick(Priority.LOW)
-                    })
-                DropdownMenuItem(
-                    text = {
-                        PriorityItem(priority = Priority.HIGH)
-                    },
-                    onClick = {
-                        expended = false
-                        onSortClick(Priority.HIGH)
+                        onSortClick(priority)
                     })
             }
         }

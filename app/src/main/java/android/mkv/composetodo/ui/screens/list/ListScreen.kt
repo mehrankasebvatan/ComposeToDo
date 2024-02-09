@@ -38,15 +38,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ListScreen(
+    action: Action,
     navigateToTaskScreen: (Int) -> Unit,
     sharedViewModel: SharedViewModel
 ) {
-    LaunchedEffect(key1 = true) {
-        sharedViewModel.getAllTasks()
-        sharedViewModel.readSortState()
+
+    LaunchedEffect(key1 = action) {
+        sharedViewModel.handleDatabaseActions(action)
     }
 
-    val action by sharedViewModel.action
 
     val allTasks by sharedViewModel.allTasks.collectAsState()
     val searchedTasks by sharedViewModel.searchedTasks.collectAsState()
@@ -63,7 +63,7 @@ fun ListScreen(
     //sharedViewModel.handleDatabaseActions(action = action)
     DisplaySnackBar(
         scaffoldState = snackbarHostState,
-        handleDatabaseAction = { sharedViewModel.handleDatabaseActions(action = action) },
+        onComplete = { sharedViewModel.action.value = it },
         onUndoClicked = {
             sharedViewModel.action.value = it
         },
@@ -97,7 +97,7 @@ fun ListScreen(
                             onSwipeToDelete = { action, task ->
                                 sharedViewModel.action.value = action
                                 sharedViewModel.updateTaskFields(task)
-
+                                snackbarHostState.currentSnackbarData?.dismiss()
                             }
                         )
                     }
@@ -150,15 +150,18 @@ fun ListFab(
 @Composable
 fun DisplaySnackBar(
     scaffoldState: SnackbarHostState,
-    handleDatabaseAction: () -> Unit,
+    onComplete: (Action) -> Unit,
     taskTitle: String,
     onUndoClicked: (Action) -> Unit,
     action: Action
 ) {
-    handleDatabaseAction()
     val undo: String = stringResource(R.string.undo)
     val ok: String = stringResource(R.string.ok)
-    val message = stringResource(id = action.title)
+
+    val message =
+        if (action == Action.DELETE_ALL)
+            stringResource(id = action.title)
+        else " '$taskTitle'  ${stringResource(id = action.title)}"
 
     val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = action) {
@@ -175,6 +178,7 @@ fun DisplaySnackBar(
                     onUndoClicked = onUndoClicked
                 )
             }
+            onComplete(Action.NO_ACTION)
         }
     }
 

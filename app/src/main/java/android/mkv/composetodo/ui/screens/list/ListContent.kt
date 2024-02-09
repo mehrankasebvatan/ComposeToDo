@@ -6,6 +6,7 @@ import android.mkv.composetodo.R
 import android.mkv.composetodo.data.models.Priority
 import android.mkv.composetodo.data.models.ToDoTask
 import android.mkv.composetodo.ui.theme.ComposeToDoTheme
+import android.mkv.composetodo.ui.theme.HighPriorityColor
 import android.mkv.composetodo.ui.theme.Typography
 import android.mkv.composetodo.util.Action
 import android.mkv.composetodo.util.RequestState
@@ -49,9 +50,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -218,11 +219,12 @@ fun RedBackground(degree: Float = 0f) {
                     .size(50.dp),
                 imageVector = Icons.Filled.Delete,
                 contentDescription = "",
-                tint = Color.Red,
+                tint = HighPriorityColor,
             )
             Text(
                 text = stringResource(id = R.string.delete_),
-                color = Color.Red
+                color = HighPriorityColor,
+                textAlign = TextAlign.Center
             )
         }
     }

@@ -25,6 +25,6 @@
     <string name="yes">تایید</string>
     <string name="are_you_sure_you_want_to_delete_all_tasks">همه وظایف حذف خواهد شد.\nآیا اطمینان دارید؟</string>
     <string name="language">انتخاب زبان</string>
-    <string name="there_is_no_tasks_yet">هنوز وظیفه ای تعریف نکرده اید!</string>
+    <string name="there_is_no_tasks_yet">خبری نیست!</string>
     <string name="delete_">برای حذف کردن\nتا انتها بکشید</string>
 </resources>

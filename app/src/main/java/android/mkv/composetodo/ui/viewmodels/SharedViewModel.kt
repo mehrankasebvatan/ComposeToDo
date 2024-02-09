@@ -63,7 +63,13 @@ class SharedViewModel @Inject constructor(
             emptyList()
         )
 
-    fun readSortState() {
+
+    init {
+        getAllTasks()
+        readSortState()
+    }
+
+    private fun readSortState() {
         _sortState.value = RequestState.Loading
         try {
             viewModelScope.launch {
@@ -98,7 +104,7 @@ class SharedViewModel @Inject constructor(
         searchAppBarState.value = SearchTopBarState.TRIGGERED
     }
 
-    fun getAllTasks() {
+    private fun getAllTasks() {
         _allTasks.value = RequestState.Loading
         try {
             viewModelScope.launch {
@@ -191,7 +197,7 @@ class SharedViewModel @Inject constructor(
             Action.UNDO -> addTask()
             else -> {}
         }
-        this.action.value = Action.NO_ACTION
+
     }
 
 
