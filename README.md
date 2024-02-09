@@ -12,10 +12,10 @@
     <th>PriorityDropDown</th>
   </tr>
   <tr>
-    <td><img src="[https://github.com/mehrankasebvatan/ComposeToDo/ScreenShots/image1.png](https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image1.png)" alt="Image 1"></td>
-    <td><img src="image2.jpg" alt="Image 2"></td>
-    <td><img src="image3.jpg" alt="Image 3"></td>
-    <td><img src="image4.jpg" alt="Image 4"></td>
+    <td><img src="https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image1.png" width="250px" alt="Image Splash"></td>
+   <td><img src="https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image2.png" width="250px" alt="Image ListScreen"></td>
+    <td><img src="https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image3.png" width="250px" alt="Image TaskScreen"></td>
+    <td><img src="https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image4.png" width="250px" alt="Image PriorityDropDown"></td>
   </tr>
 </table>
 <br/>
@@ -28,10 +28,10 @@
     <th>PriorityDropDown</th>
   </tr>
   <tr>
-    <td><img src="image1.jpg" alt="Image 1"></td>
-    <td><img src="image2.jpg" alt="Image 2"></td>
-    <td><img src="image3.jpg" alt="Image 3"></td>
-    <td><img src="image4.jpg" alt="Image 4"></td>
+   <td><img src="https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image5.png" width="250px" alt="Image Splash"></td>
+   <td><img src="https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image6.png" width="250px" alt="Image ListScreen"></td>
+    <td><img src="https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image7.png" width="250px" alt="Image TaskScreen"></td>
+    <td><img src="https://github.com/mehrankasebvatan/ComposeToDo/blob/main/ScreenShots/image8.png" width="250px" alt="Image PriorityDropDown"></td>
   </tr>
 </table>
 
