@@ -10,7 +10,6 @@ import android.mkv.composetodo.ui.theme.Typography
 import android.mkv.composetodo.ui.viewmodels.SharedViewModel
 import android.mkv.composetodo.util.Action
 import android.mkv.composetodo.util.SearchTopBarState
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -320,15 +319,15 @@ fun DeleteAllAction(
                     onDeleteAction()
                 })
 
-            DropdownMenuItem(text = {
-                Column {
-
-                    Text(text = stringResource(R.string.language))
-
-                }
-            }, onClick = {
-                expended = false
-            })
+//            DropdownMenuItem(text = {
+//                Column {
+//
+//                    Text(text = stringResource(R.string.language))
+//
+//                }
+//            }, onClick = {
+//                expended = false
+//            })
         }
     }
 }
